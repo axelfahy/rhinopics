@@ -1,0 +1,11 @@
+[run]
+source = rhinopics
+parallel = True
+omit =
+    venv*
+    *.egg-info
+    *cache
+    **/setup.py
+    versioneer.py
+    **/_version.py
+    resources**
