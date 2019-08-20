@@ -21,11 +21,12 @@ class Rhinopics:
     IMG_EXTS = {'.jpg', '.JPG', '.JPEG', '.png', '.PNG'}
 
     def __init__(self, directory: pathlib.PosixPath, keyword: str, backup: bool,
-                 tags: Union[Sequence, None] = None,
+                 lowercase: bool, tags: Union[Sequence, None] = None,
                  img_exts: Union[Sequence, None] = None):
         self.directory = directory
         self.keyword = keyword
         self.backup = backup
+        self.lowercase = lowercase
         self.tags = tags or Rhinopics.TAGS_DATE
         self.img_exts = img_exts or Rhinopics.IMG_EXTS
         self.counter = 1
@@ -46,6 +47,10 @@ class Rhinopics:
             new_name = (f'{self.keyword}_{date}_{str(self.counter).rjust(nb_digits, "0")}'
                         f'{path.suffix}')
             new_path = path.with_name(new_name)
+
+            if self.lowercase:
+                new_path = new_path.with_suffix(new_path.suffix.lower())
+
             if not new_path.exists():
                 if self.backup:
                     with new_path.open(mode='xb') as fid:

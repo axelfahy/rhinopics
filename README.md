@@ -14,9 +14,9 @@ Python CLI application to rename pictures.
 
 The date of the pictures is retrieved from the metadata of the files and concatenate with a given word to create the new name.
 
-Example of output: word_20190621_001
+Example of output: `word_20190621_001`
 
-A number is added at the end in chronological order, the number of digits depends on the number of pictures having the same date.
+A number is added at the end in chronological order, the number of digits depends on the number of pictures having the same date or being in the folder.
 
 ## Installation
 
@@ -37,10 +37,13 @@ git clone https://github.com/axelfahy/rhinopics.git
 cd rhinopics
 python -m venv venv-dev
 source venv-dev/bin/activate
+pip install -r requirements_dev.txt
 pip install -e .
 ```
 
 ## Tests
+
+Soon to come.
 
 ```sh
 python tests/test_rhinopics.py
@@ -48,8 +51,10 @@ python tests/test_rhinopics.py
 
 ## Release History
 
+* 0.1.1
+    * ADD: Flag to modify the extension to lowercase.
 * 0.1.0
-    * Initial release
+    * Initial release.
 
 ## Meta
 
