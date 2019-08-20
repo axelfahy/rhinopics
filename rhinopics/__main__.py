@@ -18,7 +18,10 @@ from .rhinopics import Rhinopics
 @click.option('--backup', '-b', is_flag=True,
               help='Create copies instead of renaming the files.'
               )
-def main(keyword: str, directory: pathlib.PosixPath, backup: bool):
+@click.option('--lowercase', '-l', is_flag=True,
+              help='Modify the extension to lowercase.'
+              )
+def main(keyword: str, directory: pathlib.PosixPath, backup: bool, lowercase: bool):
     """Rename all pictures in a directory with a common keyword.
 
     The date from the metadata of the pictures is retrieved and concanated to the keyword,
@@ -38,7 +41,7 @@ def main(keyword: str, directory: pathlib.PosixPath, backup: bool):
     $ rhinopics mykeyword
     -> mykeyword_20190621_001
     """
-    rhinopics = Rhinopics(directory, keyword, backup)
+    rhinopics = Rhinopics(directory, keyword, backup, lowercase)
     rhinopics.rename()
 
 
