@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 """Entry point of the rhinopics cli."""
+import os
 import pathlib
 import click
 import click_pathlib
+from tqdm import tqdm
 
-from .rhinopics import Rhinopics
+from .rhinobuilder import RhinoBuilder
 
 
 @click.command()
@@ -41,8 +43,16 @@ def main(keyword: str, directory: pathlib.PosixPath, backup: bool, lowercase: bo
     $ rhinopics mykeyword
     -> mykeyword_20190621_001
     """
-    rhinopics = Rhinopics(directory, keyword, backup, lowercase)
-    rhinopics.rename()
+    paths = sorted(directory.glob('*'), key=os.path.getmtime)
+    nb_digits = len(str(len(paths)))
+
+    builder = RhinoBuilder(nb_digits, keyword, backup, lowercase)
+
+    with tqdm(total=len(paths)) as pbar:
+        for path in paths:
+            rhino = builder.factory(path)
+            rhino.rename()
+            pbar.update()
 
 
 if __name__ == '__main__':
