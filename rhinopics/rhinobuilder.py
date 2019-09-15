@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 """rhinobuilder class."""
+import logging
+
 from .rhinopic import Rhinopic
 from .rhinovid import Rhinovid
 
@@ -11,6 +13,7 @@ class RhinoBuilder:
     IMG_EXTS = {'.jpg', '.JPG', '.jpeg', '.JPEG', '.png', '.PNG'}
 
     def __init__(self, nb_digits: int, keyword: str, backup: bool, lowercase: bool):
+        self.logger = logging.getLogger(__name__)
         self.nb_digits = nb_digits
         self.keyword = keyword
         self.backup = backup
@@ -26,5 +29,5 @@ class RhinoBuilder:
             return Rhinopic(path, self.nb_digits, self.keyword, self.backup, self.lowercase)
         if path.suffix in self.VIDEO_EXTS:
             return Rhinovid(path, self.nb_digits, self.keyword, self.backup, self.lowercase)
-        print(f'Extension {path.suffix} not supported')
+        self.logger.error(f'Extension {path.suffix} not supported')
         return None

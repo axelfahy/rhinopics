@@ -18,10 +18,6 @@ class Rhinopic(Rhinofile):
 
     counter = 1
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        print(f'pic: {Rhinopic.counter}')
-
     # Possible fields in the exif data.
     TAGS_DATE = {'EXIF DateTimeOriginal', 'EXIF DateTimeDigitized', 'EXIF DateTime'}
 
@@ -70,10 +66,10 @@ class Rhinopic(Rhinofile):
             if self.backup:
                 with new_path.open(mode='xb') as fid:
                     fid.write(self.path.read_bytes())
-                print(f'Copying {self.path} to {new_path}.')
+                self.logger.info(f'Copying {self.path} to {new_path}.')
             else:
                 self.path.replace(new_path)
-                print(f'Renaming {self.path} to {new_path}.')
+                self.logger.info(f'Renaming {self.path} to {new_path}.')
             Rhinopic.counter += 1
         else:
             print(f'Path {new_path} already exists.')

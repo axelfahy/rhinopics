@@ -19,10 +19,6 @@ class Rhinovid(Rhinofile):
 
     counter = 1
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        print(f'vid: {Rhinovid.counter}')
-
     def get_date(self, path: pathlib.PosixPath) -> str:
         """
         Retrieve the date of a video.
@@ -50,8 +46,8 @@ class Rhinovid(Rhinofile):
         try:
             date = parser.parse(meta['format']['tags']['creation_time']).strftime('%Y%m%d')
         except ValueError:
-            print(f'Unable to get date from {path}. Format is probably not supported.',
-                  file=sys.stderr)
+            self.logger.error(f'Unable to get date from {path}. Format is probably not supported.',
+                              file=sys.stderr)
             date = 'NoDateFound'
 
         return date
@@ -76,13 +72,13 @@ class Rhinovid(Rhinofile):
             if self.backup:
                 with new_path.open(mode='xb') as fid:
                     fid.write(self.path.read_bytes())
-                print(f'Copying {self.path} to {new_path}.')
+                self.logger.info(f'Copying {self.path} to {new_path}.')
             else:
                 self.path.replace(new_path)
-                print(f'Renaming {self.path} to {new_path}.')
+                self.logger.info(f'Renaming {self.path} to {new_path}.')
             Rhinovid.counter += 1
         else:
-            print(f'Path {new_path} already exists.')
+            self.logger.info(f'Path {new_path} already exists.')
 
     def __str__(self):
         """String representation of class."""
