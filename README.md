@@ -51,8 +51,12 @@ python tests/test_rhinopics.py
 
 ## Release History
 
-* 0.1.1
+* 0.2.0
     * ADD: Flag to modify the extension to lowercase.
+    * ADD: Add support for video files.
+    * ADD: Restructuration of project.
+    * ADD: Progress bar when renaming the files.
+    * ADD: Logger
 * 0.1.0
     * Initial release.
 
