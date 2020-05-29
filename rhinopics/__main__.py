@@ -10,7 +10,7 @@ from .rhinobuilder import RhinoBuilder
 
 
 @click.command()
-@click.argument('keyword')
+@click.argument('keyword', type=str, default=str(os.path.basename(os.getcwd())))
 @click.option('--directory', '-d',
               default='./', show_default=True,
               type=click_pathlib.Path(exists=True, file_okay=False,
@@ -33,6 +33,7 @@ def main(keyword: str, directory: pathlib.PosixPath, backup: bool, lowercase: bo
     ----------
     keyword : str
         Common keyword to use when renaming the pictures.
+        The default value is the name of the current folder.
     directory : str, default './'
         Directory containing the pictures to rename, default is the current directory.
     backup : bool, default False
@@ -51,7 +52,8 @@ def main(keyword: str, directory: pathlib.PosixPath, backup: bool, lowercase: bo
     with tqdm(total=len(paths)) as pbar:
         for path in paths:
             rhino = builder.factory(path)
-            rhino.rename()
+            if rhino is not None:
+                rhino.rename()
             pbar.update()
 
 

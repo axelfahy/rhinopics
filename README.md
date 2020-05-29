@@ -25,7 +25,6 @@ pip install rhinopics
 ```
 
 ## Usage example
-
 Examples are available in the docstrings of the functions. Official documentation will soon come out.
 
 ## Development setup
@@ -51,6 +50,8 @@ python tests/test_rhinopics.py
 
 ## Release History
 
+* 0.2.1
+    * ADD: Default argument for the keyword is the name of the directory.
 * 0.2.0
     * ADD: Flag to modify the extension to lowercase.
     * ADD: Add support for video files.

@@ -20,12 +20,11 @@ clean:
 test: lint style coverage
 
 lint:
-	pytest --pylint --pylint-rcfile=.pylintrc --pylint-error-types=CWEF
+	python -m pytest --pylint --pylint-rcfile=.pylintrc --pylint-error-types=CWEF
 
 style:
 	flake8
 	mypy rhinopics # tests
-	pytest --codestyle --docstyle
 
 # coverage:
 # 	rm -rf coverage_html_report .coverage

@@ -29,5 +29,5 @@ class RhinoBuilder:
             return Rhinopic(path, self.nb_digits, self.keyword, self.backup, self.lowercase)
         if path.suffix in self.VIDEO_EXTS:
             return Rhinovid(path, self.nb_digits, self.keyword, self.backup, self.lowercase)
-        self.logger.error(f'Extension {path.suffix} not supported')
+        self.logger.info(f'Extension {path.suffix} not supported')
         return None
