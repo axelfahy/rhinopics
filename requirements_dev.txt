@@ -2,10 +2,10 @@ coveralls
 flake8
 mypy
 numpydoc
-pytest
-pytest-codestyle
+pytest>=5.4
 pytest-cov
-pytest-docstyle
+pytest-pycodestyle
+pytest-pydocstyle
 pytest-pylint
 python-coveralls
 recommonmark

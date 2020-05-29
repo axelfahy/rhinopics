@@ -19,7 +19,7 @@ URL = 'https://github.com/axelfahy/rhinopics'
 DOWNLOAD_URL = ''
 PROJECT_URLS = {
     'Bug Tracker': 'https://github.com/axelfahy/rhinopics/issues',
-    #'Documentation': 'https://rhinopics.readthedocs.io/en/latest/',
+    # 'Documentation': 'https://rhinopics.readthedocs.io/en/latest/',
     'Source Code': 'https://github.com/axelfahy/rhinopics'
 }
 REQUIRES = [
@@ -42,10 +42,12 @@ CLASSIFIERS = [
     'Topic :: Multimedia',
     'Topic :: Utilities']
 
+
 class NoopTestCommand(TestCommand):
     def __init__(self, dist):
         print('Rhinopics does not support running tests with '
               '`python setup.py test`. Please run `make all`.')
+
 
 cmdclass = versioneer.get_cmdclass()
 cmdclass.update({"test": NoopTestCommand})
@@ -66,9 +68,9 @@ setup(name=DISTNAME,
       classifiers=CLASSIFIERS,
       python_requires='>=3.6',
       install_requires=REQUIRES,
-      entry_points = {
-        'console_scripts': [
-            'rhinopics = rhinopics.__main__:main'
-        ]
+      entry_points={
+          'console_scripts': [
+              'rhinopics = rhinopics.__main__:main'
+          ]
       },
       zip_safe=False)

@@ -25,7 +25,7 @@ pip install rhinopics
 ```
 
 ## Usage example
-Examples are available in the docstrings of the functions. Official documentation will soon come out.
+Examples are available in the docstrings of the functions. Official documentation will soon come out, or not.
 
 ## Development setup
 

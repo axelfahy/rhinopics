@@ -20,6 +20,7 @@ clean:
 test: lint style coverage
 
 lint:
+	python -m pytest --pycodestyle --pydocstyle
 	python -m pytest --pylint --pylint-rcfile=.pylintrc --pylint-error-types=CWEF
 
 style:
