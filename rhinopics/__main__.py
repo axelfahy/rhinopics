@@ -17,10 +17,10 @@ from .rhinobuilder import RhinoBuilder
                                       dir_okay=True, readable=True),
               help='Directory containing the pictures to rename.'
               )
-@click.option('--backup', '-b', is_flag=True,
+@click.option('--backup', '-b', is_flag=True, show_default=True,
               help='Create copies instead of renaming the files.'
               )
-@click.option('--lowercase', '-l', is_flag=True,
+@click.option('--lowercase', '-l', is_flag=True, default=True, show_default=True,
               help='Modify the extension to lowercase.'
               )
 def main(keyword: str, directory: pathlib.PosixPath, backup: bool, lowercase: bool):

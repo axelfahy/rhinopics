@@ -60,7 +60,7 @@ class Rhinopic(Rhinofile):
         """
         date = self.get_date(self.path)
         new_name = (f'{self.keyword}_{date}_{str(Rhinopic.counter).rjust(self.nb_digits, "0")}'
-                    f'{self.path.suffix}')
+                    f'{self.path.suffix.lower() if self.lowercase else self.path.suffix}')
         new_path = self.path.with_name(new_name)
         if not new_path.exists():
             if self.backup:
