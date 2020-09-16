@@ -17,16 +17,18 @@ clean:
 	rm -rf .mypy_cache
 	rm -rf .pytest_cache
 
-test: lint style coverage
+test: lint style
+	python -m pytest
 
 lint:
-	python -m pytest --pycodestyle --pydocstyle
-	python -m pytest --pylint --pylint-rcfile=.pylintrc --pylint-error-types=CWEF
+	ruff check .
+	mypy rhinopics
 
 style:
-	flake8
-	mypy rhinopics # tests
+	ruff format
+	isort --profile black rhinopics
 
-# coverage:
-# 	rm -rf coverage_html_report .coverage
-# 	pytest --cov=rhinopics tests --cov-report=html:coverage_html_report
+coverage:
+	rm -rf coverage_html_report .coverage
+	pytest --cov=rhinopics tests --cov-report=html:coverage_html_report
+

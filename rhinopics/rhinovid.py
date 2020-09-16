@@ -4,10 +4,8 @@
 This class contains functions to rename videos.
 """
 
-import pathlib
-import sys
-from dateutil import parser
 import ffmpeg
+from dateutil import parser
 
 from .rhinofile import Rhinofile
 
@@ -20,7 +18,7 @@ class Rhinovid(Rhinofile):
 
     counter = 1
 
-    def get_date(self, path: pathlib.PosixPath) -> str:
+    def get_date(self, full: bool = False) -> str:
         """
         Retrieve the date of a video.
 
@@ -34,8 +32,8 @@ class Rhinovid(Rhinofile):
 
         Parameters
         ----------
-        path: pathlib.PosixPath
-            Path containing the video to rename.
+        full : bool, default False
+            If full, return the seconds, otherwise, only the day.
 
         Returns
         -------
@@ -43,15 +41,19 @@ class Rhinovid(Rhinofile):
             Date as a string in the following format: %Y%m%d.
             If date is not found, return 'NoDateFound'.
         """
-        meta = ffmpeg.probe(path)
+        meta = ffmpeg.probe(self.path)
         try:
             date = parser.parse(meta["format"]["tags"]["creation_time"]).strftime(
-                "%Y%m%d"
+                "%Y%m%d %H%M%S"
             )
+            if not full:
+                date = parser.parse(meta["format"]["tags"]["creation_time"]).strftime(
+                    "%Y%m%d"
+                )
         except ValueError:
             self.logger.error(
-                f"Unable to get date from {path}. Format is probably not supported.",
-                file=sys.stderr,
+                f"Unable to get date from {self.path}. "
+                "Format is probably not supported.",
             )
             date = "NoDateFound"
 
@@ -65,10 +67,10 @@ class Rhinovid(Rhinofile):
 
         The counter is shared between instances.
         """
-        date = self.get_date(self.path)
+        date = self.get_date()
         new_name = (
             f'{self.keyword}_{date}_{str(Rhinovid.counter).rjust(self.nb_digits, "0")}'
-            f"{self.path.suffix}"
+            f'{self.path.suffix}'
         )
         new_path = self.path.with_name(new_name)
 

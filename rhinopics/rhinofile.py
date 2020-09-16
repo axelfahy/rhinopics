@@ -32,7 +32,7 @@ class Rhinofile(abc.ABC):
         self.path = path
 
     @abc.abstractmethod
-    def get_date(self, path) -> str:
+    def get_date(self, full: bool = False) -> str:
         """
         Get the date of a file.
 
