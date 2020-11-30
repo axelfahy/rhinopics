@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 """Entry point of the rhinopics cli."""
 
+import datetime
 import os
 import pathlib
+
 import click
 import click_pathlib
 from tqdm import tqdm
@@ -56,13 +58,26 @@ def main(keyword: str, directory: pathlib.PosixPath, backup: bool, lowercase: bo
     $ rhinopics mykeyword
     -> mykeyword_20190621_001
     """
-    paths = sorted(directory.glob("*"), key=os.path.getmtime)
+    paths = list(directory.glob("*"))
     nb_digits = len(str(len(paths)))
-
     builder = RhinoBuilder(nb_digits, keyword, backup, lowercase)
 
-    with tqdm(total=len(paths)) as pbar:
-        for path in paths:
+    # First pass to get the dates.
+    paths_with_dates = []
+
+    for path in paths:
+        try:
+            date = builder.factory(path).get_date(full=True)
+            if date == "NoDateFound":
+                date = datetime.datetime.max
+            paths_with_dates.append((path, date))
+        except AttributeError:
+            print(f"Cannot handle file: {path}.")
+
+    paths_sorted = [i[0] for i in sorted(paths_with_dates, key=lambda x: x[1])]
+
+    with tqdm(total=len(paths_sorted)) as pbar:
+        for path in paths_sorted:
             rhino = builder.factory(path)
             if rhino is not None:
                 rhino.rename()

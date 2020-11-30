@@ -5,7 +5,6 @@ This class contains functions to rename pictures.
 """
 
 from datetime import datetime
-import pathlib
 import exifread
 from typing import ClassVar
 
@@ -27,7 +26,7 @@ class Rhinopic(Rhinofile):
         "EXIF DateTime",
     }
 
-    def get_date(self, path: pathlib.PosixPath) -> str:
+    def get_date(self, full: bool = False) -> str:
         """
         Retrieve the date of a picture.
 
@@ -36,8 +35,8 @@ class Rhinopic(Rhinofile):
 
         Parameters
         ----------
-        path: pathlib.PosixPath
-            Path containing the picture to rename.
+        full : bool, default False
+            If full, return the seconds, otherwise, only the day.
 
         Returns
         -------
@@ -45,14 +44,14 @@ class Rhinopic(Rhinofile):
             Date as a string in the following format: %Y%m%d.
             If date is not found, return 'NoDateFound'.
         """
-        with path.open(mode="rb") as fid:
+        with self.path.open(mode="rb") as fid:
             tags_read = exifread.process_file(fid)
 
             for tag in self.TAGS_DATE:
                 if tag in tags_read.keys():
-                    date = datetime.strptime(
-                        str(tags_read[tag]), "%Y:%m:%d %H:%M:%S"
-                    ).strftime("%Y%m%d")
+                    date = datetime.strptime(str(tags_read[tag]), "%Y:%m:%d %H:%M:%S")
+                    if not full:
+                        date = date.strftime("%Y%m%d")
                     return date
 
         return "NoDateFound"
@@ -65,10 +64,10 @@ class Rhinopic(Rhinofile):
 
         The counter is shared between instances.
         """
-        date = self.get_date(self.path)
+        date = self.get_date()
         new_name = (
             f'{self.keyword}_{date}_{str(Rhinopic.counter).rjust(self.nb_digits, "0")}'
-            f"{self.path.suffix.lower() if self.lowercase else self.path.suffix}"
+            f'{self.path.suffix.lower() if self.lowercase else self.path.suffix}'
         )
         new_path = self.path.with_name(new_name)
         if not new_path.exists():
