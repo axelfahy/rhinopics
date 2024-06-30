@@ -23,22 +23,22 @@ PROJECT_URLS = {
     'Source Code': 'https://github.com/axelfahy/rhinopics'
 }
 REQUIRES = [
-    'Click==7.0',
-    'click-pathlib==2019.6.13.1',
+    'click==8.1.7',
+    'click-pathlib==2020.3.13.0',
     'exifread',
     'ffmpeg-python==0.2.0',
     'python-dateutil==2.8.0',
-    'tqdm==4.32.1',
-    'typing==3.6.6'
+    'tqdm==4.66.4',
+    'typing==3.10.0'
 ]
 CLASSIFIERS = [
     'Development Status :: 3 - Alpha',
     'Environment :: Console',
     'Intended Audience :: End Users/Desktop',
     'Programming Language :: Python :: 3',
-    'Programming Language :: Python :: 3.5',
-    'Programming Language :: Python :: 3.6',
-    'Programming Language :: Python :: 3.7',
+    'Programming Language :: Python :: 3.10',
+    'Programming Language :: Python :: 3.11',
+    'Programming Language :: Python :: 3.12',
     'Topic :: Multimedia',
     'Topic :: Utilities']
 
@@ -66,7 +66,7 @@ setup(name=DISTNAME,
       long_description=LONG_DESCRIPTION,
       long_description_content_type='text/markdown',
       classifiers=CLASSIFIERS,
-      python_requires='>=3.6',
+      python_requires='>=3.10',
       install_requires=REQUIRES,
       entry_points={
           'console_scripts': [
