@@ -3,9 +3,11 @@
 
 This class contains functions to rename pictures.
 """
+
 from datetime import datetime
 import pathlib
 import exifread
+from typing import ClassVar
 
 from .rhinofile import Rhinofile
 
@@ -19,7 +21,11 @@ class Rhinopic(Rhinofile):
     counter = 1
 
     # Possible fields in the exif data.
-    TAGS_DATE = {'EXIF DateTimeOriginal', 'EXIF DateTimeDigitized', 'EXIF DateTime'}
+    TAGS_DATE: ClassVar[set] = {
+        "EXIF DateTimeOriginal",
+        "EXIF DateTimeDigitized",
+        "EXIF DateTime",
+    }
 
     def get_date(self, path: pathlib.PosixPath) -> str:
         """
@@ -39,16 +45,17 @@ class Rhinopic(Rhinofile):
             Date as a string in the following format: %Y%m%d.
             If date is not found, return 'NoDateFound'.
         """
-        with path.open(mode='rb') as fid:
+        with path.open(mode="rb") as fid:
             tags_read = exifread.process_file(fid)
 
             for tag in self.TAGS_DATE:
                 if tag in tags_read.keys():
-                    date = datetime.strptime(str(tags_read[tag]),
-                                             '%Y:%m:%d %H:%M:%S').strftime('%Y%m%d')
+                    date = datetime.strptime(
+                        str(tags_read[tag]), "%Y:%m:%d %H:%M:%S"
+                    ).strftime("%Y%m%d")
                     return date
 
-        return 'NoDateFound'
+        return "NoDateFound"
 
     def rename(self):
         """
@@ -59,21 +66,23 @@ class Rhinopic(Rhinofile):
         The counter is shared between instances.
         """
         date = self.get_date(self.path)
-        new_name = (f'{self.keyword}_{date}_{str(Rhinopic.counter).rjust(self.nb_digits, "0")}'
-                    f'{self.path.suffix.lower() if self.lowercase else self.path.suffix}')
+        new_name = (
+            f'{self.keyword}_{date}_{str(Rhinopic.counter).rjust(self.nb_digits, "0")}'
+            f"{self.path.suffix.lower() if self.lowercase else self.path.suffix}"
+        )
         new_path = self.path.with_name(new_name)
         if not new_path.exists():
             if self.backup:
-                with new_path.open(mode='xb') as fid:
+                with new_path.open(mode="xb") as fid:
                     fid.write(self.path.read_bytes())
-                self.logger.info(f'Copying {self.path} to {new_path}.')
+                self.logger.info(f"Copying {self.path} to {new_path}.")
             else:
                 self.path.replace(new_path)
-                self.logger.info(f'Renaming {self.path} to {new_path}.')
+                self.logger.info(f"Renaming {self.path} to {new_path}.")
             Rhinopic.counter += 1
         else:
-            print(f'Path {new_path} already exists.')
+            print(f"Path {new_path} already exists.")
 
     def __str__(self):
         """String representation of class."""
-        return f'Rhinopic: {self.path}'
+        return f"Rhinopic: {self.path}"

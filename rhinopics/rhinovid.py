@@ -3,6 +3,7 @@
 
 This class contains functions to rename videos.
 """
+
 import pathlib
 import sys
 from dateutil import parser
@@ -44,11 +45,15 @@ class Rhinovid(Rhinofile):
         """
         meta = ffmpeg.probe(path)
         try:
-            date = parser.parse(meta['format']['tags']['creation_time']).strftime('%Y%m%d')
+            date = parser.parse(meta["format"]["tags"]["creation_time"]).strftime(
+                "%Y%m%d"
+            )
         except ValueError:
-            self.logger.error(f'Unable to get date from {path}. Format is probably not supported.',
-                              file=sys.stderr)
-            date = 'NoDateFound'
+            self.logger.error(
+                f"Unable to get date from {path}. Format is probably not supported.",
+                file=sys.stderr,
+            )
+            date = "NoDateFound"
 
         return date
 
@@ -61,8 +66,10 @@ class Rhinovid(Rhinofile):
         The counter is shared between instances.
         """
         date = self.get_date(self.path)
-        new_name = (f'{self.keyword}_{date}_{str(Rhinovid.counter).rjust(self.nb_digits, "0")}'
-                    f'{self.path.suffix}')
+        new_name = (
+            f'{self.keyword}_{date}_{str(Rhinovid.counter).rjust(self.nb_digits, "0")}'
+            f"{self.path.suffix}"
+        )
         new_path = self.path.with_name(new_name)
 
         if self.lowercase:
@@ -70,16 +77,16 @@ class Rhinovid(Rhinofile):
 
         if not new_path.exists():
             if self.backup:
-                with new_path.open(mode='xb') as fid:
+                with new_path.open(mode="xb") as fid:
                     fid.write(self.path.read_bytes())
-                self.logger.info(f'Copying {self.path} to {new_path}.')
+                self.logger.info(f"Copying {self.path} to {new_path}.")
             else:
                 self.path.replace(new_path)
-                self.logger.info(f'Renaming {self.path} to {new_path}.')
+                self.logger.info(f"Renaming {self.path} to {new_path}.")
             Rhinovid.counter += 1
         else:
-            self.logger.info(f'Path {new_path} already exists.')
+            self.logger.info(f"Path {new_path} already exists.")
 
     def __str__(self):
         """String representation of class."""
-        return f'Rhinovid: {self.path}'
+        return f"Rhinovid: {self.path}"
