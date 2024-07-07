@@ -5,8 +5,9 @@ This class contains functions to rename pictures.
 """
 
 from datetime import datetime
-import exifread
 from typing import ClassVar
+
+import exifread
 
 from .rhinofile import Rhinofile
 
@@ -51,8 +52,8 @@ class Rhinopic(Rhinofile):
                 if tag in tags_read.keys():
                     date = datetime.strptime(str(tags_read[tag]), "%Y:%m:%d %H:%M:%S")
                     if not full:
-                        date = date.strftime("%Y%m%d")
-                    return date
+                        return date.strftime("%Y%m%d")
+                    return date.strftime("%Y%m%d %H%M%S")
 
         return "NoDateFound"
 
@@ -75,9 +76,11 @@ class Rhinopic(Rhinofile):
                 with new_path.open(mode="xb") as fid:
                     fid.write(self.path.read_bytes())
                 self.logger.info(f"Copying {self.path} to {new_path}.")
+                print(f"Copying {self.path} to {new_path}.")
             else:
                 self.path.replace(new_path)
                 self.logger.info(f"Renaming {self.path} to {new_path}.")
+                print(f"Renaming {self.path} to {new_path}.")
             Rhinopic.counter += 1
         else:
             print(f"Path {new_path} already exists.")

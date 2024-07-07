@@ -5,7 +5,8 @@ Those tests are patching
 """
 
 import unittest
-from unittest.mock import Mock, patch, mock_open
+import tempfile
+import shutil
 from pathlib import Path
 import os
 import sys
@@ -20,12 +21,22 @@ class TestRhinopic(unittest.TestCase):
     """
 
     BASE_PATH = Path("tests/fixtures/")
-    IMGA_PATH = Path("tests/fixtures/imgA.JPG")
-    IMGB_PATH = Path("tests/fixtures/imgB.jpg")
+    IMGA_NAME = Path("imgA.JPG")
+    IMGB_NAME = Path("imgB.jpg")
+
+    def setUp(self):
+        # Create a temporary directory.
+        self.test_dir = Path(tempfile.mkdtemp())
+        print(self.test_dir)
+
+        # Copy the fixtures folder.
+        shutil.copytree(self.BASE_PATH, self.test_dir, dirs_exist_ok=True)
 
     def tearDown(self):
         """Reset the counter after each test."""
         Rhinopic.counter = 1
+
+        shutil.rmtree(self.test_dir)
 
     def test_rename_pic_default(self):
         """
@@ -39,13 +50,27 @@ class TestRhinopic(unittest.TestCase):
         keyword = str(os.path.basename(os.getcwd()))
         backup = False
         lowercase = True
-        with patch("pathlib.Path.replace") as replace:
-            builder = RhinoBuilder(n_digits, keyword, backup, lowercase)
-            rhino = builder.factory(self.IMGA_PATH)
-            new_path = rhino.rename()
-            self.assertEqual(
-                new_path, self.BASE_PATH.joinpath("rhinopics_20191224_1.JPG")
-            )
+
+        test_cases = [
+            (
+                self.test_dir / self.IMGA_NAME,
+                self.test_dir / f"{keyword}_20191224_1.jpg",
+            ),
+            (
+                self.test_dir / self.IMGB_NAME,
+                self.test_dir / f"{keyword}_NoDateFound_2.jpg",
+            ),
+        ]
+        builder = RhinoBuilder(n_digits, keyword, backup, lowercase)
+
+        for old_name, new_name in test_cases:
+            with self.subTest(old_name=old_name, new_name=new_name):
+                rhino = builder.factory(old_name)
+                rhino.rename()
+
+                # Since backup=False, old path should not exist.
+                assert os.path.exists(old_name) is False
+                assert os.path.exists(new_name) is True
 
     def test_rename_pic_keyword_multiple_digits(self):
         """
@@ -55,13 +80,27 @@ class TestRhinopic(unittest.TestCase):
         keyword = "testA"
         backup = False
         lowercase = False
-        with patch("pathlib.Path.replace") as replace:
-            builder = RhinoBuilder(n_digits, keyword, backup, lowercase)
-            rhino = builder.factory(self.IMGA_PATH)
-            new_path = rhino.rename()
-            self.assertEqual(
-                new_path, self.BASE_PATH.joinpath("testA_20191224_0001.JPG")
-            )
+
+        test_cases = [
+            (
+                self.test_dir / self.IMGA_NAME,
+                self.test_dir / f"{keyword}_20191224_0001.JPG",
+            ),
+            (
+                self.test_dir / self.IMGB_NAME,
+                self.test_dir / f"{keyword}_NoDateFound_0002.jpg",
+            ),
+        ]
+        builder = RhinoBuilder(n_digits, keyword, backup, lowercase)
+
+        for old_name, new_name in test_cases:
+            with self.subTest(old_name=old_name, new_name=new_name):
+                rhino = builder.factory(old_name)
+                rhino.rename()
+
+                # Since backup=False, old path should not exist.
+                assert os.path.exists(old_name) is False
+                assert os.path.exists(new_name) is True
 
     def test_rename_pic_backup(self):
         """
@@ -73,19 +112,30 @@ class TestRhinopic(unittest.TestCase):
         keyword = "test_with_backup"
         backup = True
         lowercase = True
-        with patch("builtins.open", unittest.mock.mock_open()):
-            builder = RhinoBuilder(n_digits, keyword, backup, lowercase)
-            rhino = builder.factory(self.IMGA_PATH)
-            new_path = rhino.rename()
-            self.assertEqual(
-                new_path, self.BASE_PATH.joinpath("test_with_backup_20191224_1.JPG")
-            )
 
-    # TODO: check with files having the date in different fields.
-    # TODO: unittest in another folder.
+        test_cases = [
+            (
+                self.test_dir / self.IMGA_NAME,
+                self.test_dir / f"{keyword}_20191224_1.jpg",
+            ),
+            (
+                self.test_dir / self.IMGB_NAME,
+                self.test_dir / f"{keyword}_NoDateFound_2.jpg",
+            ),
+        ]
+        builder = RhinoBuilder(n_digits, keyword, backup, lowercase)
+
+        for old_name, new_name in test_cases:
+            with self.subTest(old_name=old_name, new_name=new_name):
+                rhino = builder.factory(old_name)
+                rhino.rename()
+
+                # Since backup=True, old path should exist.
+                assert os.path.exists(old_name) is True
+                assert os.path.exists(new_name) is True
 
 
 if __name__ == "__main__":
     from pkg_resources import load_entry_point
 
-    sys.exit(load_entry_point("pytest", "console_scripts", "py.test")())  # type: ignore
+    sys.exit(load_entry_point("pytest", "console_scripts", "py.test")())

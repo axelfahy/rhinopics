@@ -65,14 +65,14 @@ def main(keyword: str, directory: pathlib.PosixPath, backup: bool, lowercase: bo
     # First pass to get the dates.
     paths_with_dates = []
 
-    for path in paths:
-        try:
+    try:
+        for path in paths:
             date = builder.factory(path).get_date(full=True)
             if date == "NoDateFound":
                 date = datetime.datetime.max
             paths_with_dates.append((path, date))
-        except AttributeError:
-            print(f"Cannot handle file: {path}.")
+    except AttributeError:
+        print(f"Cannot handle file: {path}.")
 
     paths_sorted = [i[0] for i in sorted(paths_with_dates, key=lambda x: x[1])]
 

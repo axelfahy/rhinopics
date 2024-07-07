@@ -4,9 +4,8 @@
 This class contains functions to rename videos.
 """
 
-import sys
-from dateutil import parser
 import ffmpeg
+from dateutil import parser
 
 from .rhinofile import Rhinofile
 
@@ -55,7 +54,6 @@ class Rhinovid(Rhinofile):
             self.logger.error(
                 f"Unable to get date from {self.path}. "
                 "Format is probably not supported.",
-                file=sys.stderr,
             )
             date = "NoDateFound"
 
