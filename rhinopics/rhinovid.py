@@ -69,8 +69,8 @@ class Rhinovid(Rhinofile):
         """
         date = self.get_date()
         new_name = (
-            f'{self.keyword}_{date}_{str(Rhinovid.counter).rjust(self.nb_digits, "0")}'
-            f'{self.path.suffix}'
+            f"{self.keyword}_{date}_{str(Rhinovid.counter).rjust(self.nb_digits, '0')}"
+            f"{self.path.suffix}"
         )
         new_path = self.path.with_name(new_name)
 

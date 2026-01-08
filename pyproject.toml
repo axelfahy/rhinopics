@@ -6,12 +6,12 @@ build-backend = "setuptools.build_meta"
 name = "rhinopics"
 dynamic = ["version"]
 dependencies = [
-  "click==8.1.7",
+  "click==8.3.1",
   "click-pathlib==2020.3.13.0",
   "exifread",
   "ffmpeg-python==0.2.0",
   "python-dateutil==2.9.0",
-  "tqdm==4.66.4",
+  "tqdm==4.67.1",
 ]
 requires-python = ">= 3.8"
 authors = [
@@ -34,6 +34,8 @@ classifiers = [
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
   "Topic :: Multimedia",
   "Topic :: Utilities",
 ]
